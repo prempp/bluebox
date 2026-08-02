@@ -10,7 +10,7 @@ import com.bluebox.smtp.storage.StorageFactory;
 import com.bluebox.smtp.storage.StorageIf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
-import org.apache.commons.fileupload.util.mime.MimeUtility;
+// commons-fileupload2 removed MimeUtility; use javax.mail.internet.MimeUtility instead
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.codehaus.jettison.json.JSONArray;
@@ -27,8 +27,8 @@ import javax.mail.*;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.URL;
@@ -602,7 +602,7 @@ public class Utils {
         while (st.hasMoreTokens()) {
             String s = st.nextToken();
             try {
-                s = MimeUtility.decodeText(s);
+                s = javax.mail.internet.MimeUtility.decodeText(s);
                 // remove trailing =
                 int pos = s.lastIndexOf('=');
                 if ((pos > 0) && (pos == s.length() - 1)) {

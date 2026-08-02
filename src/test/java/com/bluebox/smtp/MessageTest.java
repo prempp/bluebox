@@ -4,7 +4,7 @@ import com.bluebox.Utils;
 import com.bluebox.smtp.storage.BlueBoxParser;
 import junit.framework.TestCase;
 
-import javax.activation.DataHandler;
+import jakarta.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;

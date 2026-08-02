@@ -1,6 +1,6 @@
 package com.bluebox;
 
-import org.apache.commons.fileupload.ProgressListener;
+import org.apache.commons.fileupload2.core.ProgressListener;
 
 public class TestProgressListener implements ProgressListener {
 

@@ -129,8 +129,8 @@ public class H2Impl extends AbstractStorage implements StorageIf {
             StorageFactory.getInstance().start();
             return ((H2Impl) StorageFactory.getInstance()).getConnection();
         }
-//        String url = "jdbc:h2:"+getDbName()+";create=true";
-        String url = "jdbc:h2:" + getDbName() + ";";
+        // H2 2.x: file is auto-created; AUTOCOMMIT=FALSE lets us call connection.commit() explicitly
+        String url = "jdbc:h2:" + getDbName() + ";AUTOCOMMIT=FALSE";
         Connection conn = DriverManager.getConnection(url);
         return conn;
     }

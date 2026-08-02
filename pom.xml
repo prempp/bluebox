@@ -10,33 +10,32 @@
 	<url>https://github.com/stephen-kruger/bluebox</url>
 
 	<properties>
-		<project.build.sourceEncoding>Cp1252</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<subethasmtp_version>3.1.7</subethasmtp_version>
 		<slf4j_version>2.0.16</slf4j_version>
 		<jsoup_version>1.17.1</jsoup_version>
 		<commons_io_version>2.15.1</commons_io_version>
 		<rome_version>2.1.0</rome_version>
-		<lucene_version>9.0.0</lucene_version>
-		<lucene_analyzers_version>8.11.1</lucene_analyzers_version>
-		<solr_version>8.11.1</solr_version>
+		<!-- Lucene 9.x ships analyzers inside lucene-core; use a single version -->
+		<lucene_version>9.11.1</lucene_version>
 		<mongo_version>3.12.10</mongo_version>
 		<apache_wink>1.4</apache_wink>
-		<jetty_version>11.0.8</jetty_version>
+		<jetty_version>11.0.24</jetty_version>
 		<apache_httpclient>4.5.14</apache_httpclient>
 		<h2_database>2.2.224</h2_database>
-		<javax_mail>1.6.2</javax_mail>
 		<commons_codec>1.17.0</commons_codec>
-		<antisamy_version>1.6.5</antisamy_version>
+		<antisamy_version>1.7.5</antisamy_version>
 		<commons_config>1.10</commons_config>
 		<commons_lang>2.6</commons_lang>
-		<file_upload>1.4</file_upload>
+		<file_upload>1.5</file_upload>
 		<junit_version>4.13.2</junit_version>
-		<codehaus_jettison>1.4.1</codehaus_jettison>
+		<codehaus_jettison>1.5.4</codehaus_jettison>
 		<sun_javax_mail>1.6.2</sun_javax_mail>
-		<javaee_version>7.0</javaee_version>
-		<javax_ws_rs_api>2.1.1</javax_ws_rs_api>
-		<annotation_version>1.3.2</annotation_version>
-		<servlet_api_version>4.0.1</servlet_api_version><!-- 3.1.0 -->
+		<!-- Jakarta EE 10 namespace (javax → jakarta) -->
+		<jakarta_servlet_version>6.0.0</jakarta_servlet_version>
+		<jakarta_ws_rs_version>3.1.0</jakarta_ws_rs_version>
+		<jakarta_annotation_version>2.1.1</jakarta_annotation_version>
+		<jakarta_activation_version>2.1.3</jakarta_activation_version>
 		<mockito>5.12.0</mockito>
 	</properties>
 	<distributionManagement>
@@ -62,9 +61,10 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.13.0</version>
 					<configuration>
-						<source>11</source>
-						<target>11</target>
-						<encoding>Cp1252</encoding>
+						<source>21</source>
+						<target>21</target>
+						<release>21</release>
+						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -168,17 +168,19 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>11</source>
-					<target>11</target>
+					<source>21</source>
+					<target>21</target>
+					<release>21</release>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Jakarta EE 10 / Java 21 compatible servlet API -->
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
-			<version>5.0.0</version>
+			<version>${jakarta_servlet_version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -187,24 +189,7 @@
 			<version>${junit_version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.solr</groupId>
-			<artifactId>solr-solrj</artifactId>
-			<version>${solr_version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<artifactId>solr-core</artifactId>
-			<groupId>org.apache.solr</groupId>
-			<version>${solr_version}</version>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>jdk.tools</artifactId>
-					<groupId>jdk.tools</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!-- Lucene 9.x: analyzers-common was merged into lucene-core -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
@@ -213,8 +198,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-analyzers-common</artifactId>
-			<version>${lucene_analyzers_version}</version>
+			<artifactId>lucene-analysis-common</artifactId>
+			<version>${lucene_version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
@@ -275,10 +260,11 @@
 			<artifactId>rome</artifactId>
 			<version>${rome_version}</version>
 		</dependency>
+		<!-- commons-fileupload2-jakarta-servlet6: Jakarta EE 10 / Servlet 6 compatible -->
 		<dependency>
-			<groupId>commons-fileupload</groupId>
-			<artifactId>commons-fileupload</artifactId>
-			<version>${file_upload}</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-fileupload2-jakarta-servlet6</artifactId>
+			<version>2.0.0-M2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-configuration</groupId>
@@ -317,29 +303,27 @@
 			<artifactId>commons-io</artifactId>
 			<version>${commons_io_version}</version>
 		</dependency>
+		<!-- Jakarta EE 10 replacements for javax.* APIs -->
 		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1.1</version>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
+			<version>${jakarta_activation_version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>javax.annotation-api</artifactId>
-			<version>${annotation_version}</version>
+			<groupId>org.eclipse.angus</groupId>
+			<artifactId>angus-activation</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+			<version>${jakarta_annotation_version}</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>${javax_ws_rs_api}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${servlet_api_version}</version>
+			<groupId>jakarta.ws.rs</groupId>
+			<artifactId>jakarta.ws.rs-api</artifactId>
+			<version>${jakarta_ws_rs_version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- <dependency> <groupId>javax</groupId> <artifactId>javaee-web-api</artifactId>

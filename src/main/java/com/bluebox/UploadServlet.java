@@ -1,22 +1,20 @@
 package com.bluebox;
 
 import com.bluebox.smtp.storage.StorageFactory;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletFileUpload;
+import org.apache.commons.fileupload2.jakarta.servlet6.JakartaServletDiskFileUpload;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.internet.MimeMessage;
-import javax.servlet.ServletContext;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,22 +35,15 @@ public class UploadServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        // Create a factory for disk-based file items
-        DiskFileItemFactory factory = new DiskFileItemFactory();
 
-        // Configure a repository (to ensure a secure temp location is used)
-        ServletContext servletContext = this.getServletConfig().getServletContext();
-        File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
-        factory.setRepository(repository);
-
-        // Create a new file upload handler
-        ServletFileUpload upload = new ServletFileUpload(factory);
+        // Create a new file upload handler (fileupload2 handles factory internally)
+        JakartaServletDiskFileUpload upload = new JakartaServletDiskFileUpload();
 
         // Parse the request
         try {
             JSONArray result = new JSONArray();
-            List<FileItem> items = upload.parseRequest(request);
-            for (FileItem item : items) {
+            List<DiskFileItem> items = upload.parseRequest(request);
+            for (DiskFileItem item : items) {
                 if (item.isFormField()) {
                     log.info("Ignoring form field");
                 } else {
@@ -63,7 +54,6 @@ public class UploadServlet extends HttpServlet {
                         res.put("width", "0");
                         res.put("height", "0");
                         try {
-
                             if (item.getSize() > 0) {
                                 log.info("Loading file {} with size {}", item.getName(), item.getSize());
                                 MimeMessage message = Utils.loadEML(item.getInputStream());

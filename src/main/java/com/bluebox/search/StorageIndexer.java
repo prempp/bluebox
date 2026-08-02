@@ -5,7 +5,6 @@ import com.bluebox.smtp.InboxAddress;
 import com.bluebox.smtp.storage.BlueboxMessage;
 import com.bluebox.smtp.storage.StorageFactory;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.bson.Document;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -82,32 +81,32 @@ public class StorageIndexer implements SearchIf {
      * Stall the commit unless a certain timeout has been reached,
      * to prevent multiple, consecutive commits
      */
-    public void commit(boolean force) throws SolrServerException, IOException {
+    public void commit(boolean force) throws Exception {
         // do nothing
     }
 
     @Override
-    public synchronized void deleteDoc(String uid) throws SolrServerException, IOException {
+    public synchronized void deleteDoc(String uid) throws Exception {
         // do nothing
     }
 
     @Override
-    public void deleteDoc(String value, SearchUtils.SearchFields field) throws SolrServerException, IOException {
+    public void deleteDoc(String value, SearchUtils.SearchFields field) throws Exception {
         // do nothing
     }
 
     @Override
-    public void addDoc(String uid, String inbox, String from, String subject, String text, String html, String recipients, long size, long received) throws IOException, SolrServerException {
+    public void addDoc(String uid, String inbox, String from, String subject, String text, String html, String recipients, long size, long received) throws Exception {
         // do nothing
     }
 
     @Override
-    public void addDoc(String uid, String inbox, String from, String subject, String text, String html, String recipients, long size, long received, boolean commit) throws IOException, SolrServerException {
+    public void addDoc(String uid, String inbox, String from, String subject, String text, String html, String recipients, long size, long received, boolean commit) throws Exception {
         // do nothing
     }
 
     @Override
-    public void deleteIndexes() throws IOException {
+    public void deleteIndexes() throws Exception {
         // do nothing
     }
 
